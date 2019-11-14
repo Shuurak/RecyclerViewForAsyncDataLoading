@@ -10,13 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ascom.recyclerview.data.DataControlContract;
+import com.ascom.recyclerview.data.DataUnit;
+
 import java.util.ArrayList;
 
 public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContentAdapter.RecyclerViewHolder> {
 
-    private ArrayList<String> mContentList = new ArrayList<>();
+    private ArrayList<DataUnit> mContentList = new ArrayList<>();
     Context mContext;
-    private static final String TAG = "!!!!";
+    private static final String TAG = "AppAscomRES " + "RecyclerContentAdapter";
 
     public RecyclerContentAdapter(Context aContext) {
         mContext = aContext;
@@ -33,7 +36,7 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
     public void onBindViewHolder(@NonNull RecyclerViewHolder aHolder, int aPosition) {
         aHolder.bind(mContentList.get(aPosition));
 
-        Log.d(TAG, "onBindViewHolder: +");
+        Log.d(TAG, "onBindViewHolder: new content bind");
     }
 
     @Override
@@ -42,7 +45,7 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
         return mContentList.size();
     }
 
-    public void setContentList(ArrayList<String> aContentList) {
+    public void setContentList(ArrayList<DataUnit> aContentList) {
         mContentList.addAll(aContentList);
         notifyDataSetChanged();
     }
@@ -54,17 +57,27 @@ public class RecyclerContentAdapter extends RecyclerView.Adapter<RecyclerContent
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTextView;
+        private TextView mItemTag;
+        private TextView mItemTimestamp;
+        private TextView mItemPriority;
+        private TextView mItemText;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);
 
-            mTextView = itemView.findViewById(R.id.titleTextView);
+            mItemTag = itemView.findViewById(R.id.item_tag_field);
+            mItemTimestamp = itemView.findViewById(R.id.item_timestamp_field);
+            mItemPriority = itemView.findViewById(R.id.item_priority_field);
+            mItemText = itemView.findViewById(R.id.item_text_field);
         }
 
-        public void bind (String aContent) {
-            mTextView.setText(aContent);
-            Log.d(TAG, "bind: ++");
+        public void bind (DataUnit aDataUnit) {
+            mItemTag.setText(aDataUnit.getTag());
+            mItemTimestamp.setText(aDataUnit.getTimestamp());
+            mItemPriority.setText(aDataUnit.getPriority());
+            mItemText.setText(aDataUnit.getText());
+
+            Log.d(TAG, "bind: content set");
         }
     }
 }

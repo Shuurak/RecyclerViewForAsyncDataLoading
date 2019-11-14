@@ -4,10 +4,57 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/titleTextView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/basic_item_content"
-        android:textSize="19sp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/item_tag_field"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_tag"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/item_priority_field"
+                    android:layout_width="63dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_priority"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/item_timestamp_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_timestamp"
+                    android:textSize="15sp"
+                    android:textStyle="italic" />
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/item_text_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/item_text"
+            android:textSize="16sp" />
+        <View
+            android:id="@+id/delimeter_view"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="@dimen/text_small_margin"
+            android:background="@color/gray_mercury"/>
+
+    </LinearLayout>
+
 </LinearLayout>

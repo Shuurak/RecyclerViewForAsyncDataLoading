@@ -2,6 +2,10 @@
     <string name="app_name">RecyclerView</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="item_tag">Item tag field</string>
+    <string name="item_text">Item text here. This field can be very large</string>
+    <string name="item_timestamp">Timestamp</string>
+    <string name="item_priority">Priority</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="basic_item_content">Example Item content</string>
 </resources>

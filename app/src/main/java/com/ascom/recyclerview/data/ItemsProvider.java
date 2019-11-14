@@ -7,18 +7,40 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+
 public class ItemsProvider extends ContentProvider {
-    private static final String TAG = "ItemsProvider";
+    private static final String TAG = "AppAscomRES " + "ItemsProvider";
 
     private ItemsDbHelper mItemsDbHelper;
-    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     private static final int URI_ITEMS = 1000;
     private static final int URI_ITEMS_ID = 1001;
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    static {
+        // The calls to addURI() go here, for all of the content URI patterns that the provider
+        // should recognize. All paths added to the UriMatcher have a corresponding code to return
+        // when a match is found.
+
+        // The content URI of the form "content://com.example.android.guests/guests" will map to the
+        // integer code {@link #GUESTS}. This URI is used to provide access to MULTIPLE rows
+        // of the guests table.
+        sUriMatcher.addURI(DataControlContract.CONTENT_AUTHORITY, DataControlContract.PATH_ITEMS, URI_ITEMS);
+
+        // The content URI of the form "content://com.example.android.guests/guests/#" will map to the
+        // integer code {@link #GUEST_ID}. This URI is used to provide access to ONE single row
+        // of the guests table.
+        //
+        // In this case, the "#" wildcard is used where "#" can be substituted for an integer.
+        // For example, "content://com.example.android.guests/guests/3" matches, but
+        // "content://com.example.android.guests/guests" (without a number at the end) doesn't match.
+        sUriMatcher.addURI(DataControlContract.CONTENT_AUTHORITY, DataControlContract.PATH_ITEMS + "/#", URI_ITEMS_ID);
+    }
+
 
 
     @Override
@@ -54,6 +76,7 @@ public class ItemsProvider extends ContentProvider {
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
 
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -77,6 +100,7 @@ public class ItemsProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         final int match = sUriMatcher.match(uri);
+        getContext().getContentResolver().notifyChange(uri, null);
         switch (match) {
             case URI_ITEMS:
                 return insertItem(uri, values);
@@ -87,7 +111,40 @@ public class ItemsProvider extends ContentProvider {
     }
 
     private Uri insertItem(Uri aUri, ContentValues aValues) {
-        return null;
+        // Check that the name is not null
+        String tag = aValues.getAsString(DataControlContract.ViewsData.COLUMN_TAG);
+        if (tag == null) {
+            throw new IllegalArgumentException("Guest requires a name");
+        }
+
+        String timestamp = aValues.getAsString(DataControlContract.ViewsData.COLUMN_TIMESTAMP);
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Guest requires a name");
+        }
+
+        String priority = aValues.getAsString(DataControlContract.ViewsData.COLUMN_PRIORITY);
+        if (priority == null) {
+            throw new IllegalArgumentException("Guest requires a name");
+        }
+
+        String text = aValues.getAsString(DataControlContract.ViewsData.COLUMN_TEXT);
+        if (text == null) {
+            throw new IllegalArgumentException("Guest requires a name");
+        }
+
+        // Get writeable database
+        SQLiteDatabase database = mItemsDbHelper.getWritableDatabase();
+
+        // Insert the new guest with the given values
+        long id = database.insert(DataControlContract.ViewsData.TABLE_NAME, null, aValues);
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(TAG, "Failed to insert row for " + aUri);
+            return null;
+        }
+
+        // Return the new URI with the ID (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(aUri, id);
     }
 
     @Override

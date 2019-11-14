@@ -8,9 +8,9 @@ import android.util.Log;
 
 public class ItemsDbHelper extends SQLiteOpenHelper {
 
-    private static final String TAG = "ItemsDbHelper";
+    private static final String TAG = "AppAscomRES " + "ItemsDbHelper";
 
-    private static final String DB_NAME = "";
+    private static final String DB_NAME = "dbtest.db";
 
     private static final int DB_VERSION = 1;
 
@@ -23,8 +23,8 @@ public class ItemsDbHelper extends SQLiteOpenHelper {
 
         String SQL_CREATE_TABLE = "CREATE TABLE " + DataControlContract.ViewsData.TABLE_NAME + " ("
                 + DataControlContract.ViewsData._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + DataControlContract.ViewsData.COLUMN_LABEL + " TEXT NOT NULL DEFAULT 'labelHere', "
-                + DataControlContract.ViewsData.COLUMN_URI + " TEXT NOT NULL DEFAULT 'data://', "
+                + DataControlContract.ViewsData.COLUMN_TAG + " TEXT NOT NULL DEFAULT 'labelHere', "
+                + DataControlContract.ViewsData.COLUMN_PRIORITY + " TEXT NOT NULL DEFAULT 'data://', "
                 + DataControlContract.ViewsData.COLUMN_TIMESTAMP + " TEXT NOT NULL, "
                 + DataControlContract.ViewsData.COLUMN_TEXT + " TEXT NOT NULL DEFAULT 'someTextHere');";
 

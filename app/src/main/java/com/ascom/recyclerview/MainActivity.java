@@ -8,21 +8,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.opengl.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
-import android.view.View;
+
+
+import com.ascom.recyclerview.data.DataUnit;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "AppAscomRES " + "MainActivity";
     public static final String MAIN_ACTIVITY_HANDLER = "MAIN_ACTIVITY_HANDLER";
     public static final String AVAILABLE_DATA = "AVAILABLE_DATA";
     public static final int INIT_DATA_LOAD = 0;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle aSavedInstanceState) {
         super.onCreate(aSavedInstanceState);
+        Log.d(TAG, "onCreate: start");
         setContentView(R.layout.activity_main);
 
         mActivityHandler = new ActivityHandler(this);
@@ -55,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
                 mContentService = mContentServiceBinder.getServiceBinder();
                 mServiceBindFlag = true;
+
+
+                mContentService.updateDataRequest(INIT_DATA_LOAD, null);
             }
 
             @Override
@@ -72,13 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
 
-        mContentService.updateDataRequest("first data");
+        Log.d(TAG, "onCreate: finish");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mActivityHandler.removeCallbacksAndMessages(null);
+        unbindService(mServiceConnection);
         Log.d(TAG, "onDestroy: MainActivity destroyed");
     }
     @Override
@@ -99,17 +105,24 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView() {
         mRecyclerView = findViewById(R.id.mainRecyclerView);
 
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         mRecyclerContentAdapter = new RecyclerContentAdapter(this);
         mRecyclerView.setAdapter(mRecyclerContentAdapter);
 
-        mRecyclerContentAdapter.setContentList(loadContentToView());
+//        mRecyclerContentAdapter.setContentList(loadContentToView());
     }
 
-    void updateData(ArrayList<String> aStringArrayList) {
-        mRecyclerContentAdapter.setContentList(aStringArrayList);
+    void updateData(ArrayList<DataUnit> aDataUnitArrayList) {
+        mRecyclerContentAdapter.setContentList(aDataUnitArrayList);
     }
 
     ArrayList<String> loadContentToView () {
@@ -133,17 +146,19 @@ public class MainActivity extends AppCompatActivity {
 
             MainActivity mainActivity = mMainActivityWeakReference.get();
 
-            if (mainActivity!=null) {
+            if (mainActivity != null) {
                 switch (msg.what) {
-                    case INIT_DATA_LOAD: {
+                    case INIT_DATA_LOAD:
                         Log.d(TAG, "handleMessage: msg - Init Data Load");
-                        updateData(msg.getData().getStringArrayList(AVAILABLE_DATA));
+                        updateData(msg.getData().<DataUnit>getParcelableArrayList(AVAILABLE_DATA));
                         break;
-                    }
-                    case NEW_DATA_AVAILABLE: {
+
+                    case NEW_DATA_AVAILABLE:
                         Log.d(TAG, "handleMessage: msg - New Data Available");
+                        mRecyclerContentAdapter.clearContentList();
+                        updateData(msg.getData().<DataUnit>getParcelableArrayList(AVAILABLE_DATA));
                         break;
-                    }
+
                 }
             }
         }

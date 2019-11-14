@@ -2,6 +2,8 @@ package com.ascom.recyclerview.data;
 
 import android.content.ContentResolver;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 
 public final class DataControlContract {
@@ -29,9 +31,11 @@ public final class DataControlContract {
 
 
         public static final String _ID = BaseColumns._ID;
-        public static final String COLUMN_LABEL = "label";
-        public static final String COLUMN_URI = "uri";
+        public static final String COLUMN_TAG = "tag";
+        public static final String COLUMN_PRIORITY = "priority";
         public static final String COLUMN_TEXT = "text";
         public static final String COLUMN_TIMESTAMP = "timestamp";
     }
+
+
 }
