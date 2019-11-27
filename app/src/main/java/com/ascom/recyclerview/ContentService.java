@@ -99,6 +99,20 @@ public class ContentService extends IntentService {
         sendMsgToUI(MainActivity.INIT_DATA_LOAD, bundle);
 
         insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
+        insertItem();
         getDataFromDb();
     }
 
@@ -153,7 +167,7 @@ public class ContentService extends IntentService {
 
         ContentValues values = new ContentValues();
         values.put(DataControlContract.ViewsData.COLUMN_TAG, tag);
-        values.put(DataControlContract.ViewsData.COLUMN_TIMESTAMP, time);
+        values.put(DataControlContract.ViewsData.COLUMN_TIMESTAMP, System.currentTimeMillis()/1000);
         values.put(DataControlContract.ViewsData.COLUMN_PRIORITY, prior);
         values.put(DataControlContract.ViewsData.COLUMN_TEXT, text);
 
